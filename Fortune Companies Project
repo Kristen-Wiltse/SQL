@@ -1,0 +1,28 @@
+SELECT *
+FROM fortune_companies;
+
+--PLease find the average employee tenure of each company and rate it.
+SELECT company_name, avg_employee_tenure
+,CASE WHEN avg_employee_tenure>=6.5 THEN 'above average'
+WHEN avg_employee_tenure>=5.5 THEN 'average'
+WHEN avg_employee_tenure>=4.5 THEN 'below average'
+ELSE 'poor' 
+END AS 'tenure rating'
+FROM fortune_companies;
+
+--Please list the average amount of PTO days for each industry. But only greater than or equal to 15.
+SELECT industry,AVG (paid_time_off_days)
+FROM fortune_companies
+GROUP BY industry 
+HAVING paid_time_off_days>=15;
+
+--Please find me companies with health care benefits and maternity leave weeks equal or greater to 8.
+SELECT company_name,healthcare_benefits,maternity_leave_weeks
+FROM fortune_companies
+WHERE healthcare_benefits=1
+AND maternity_leave_weeks>=8;
+
+--Please total the sum revenue for each industry. 
+SELECT SUM(revenue), industry
+FROM fortune_companies
+GROUP BY industry;

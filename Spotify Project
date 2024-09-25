@@ -65,10 +65,10 @@ END AS 'Popularity'
 FROM Spotifydata
 ORDER BY popularity desc;
 
---IS LIVELY MUSIC OR ACOUSTIC MUSIC MORE POPULAR?
+--WHAT IS THE MOST POPULAR SONG? 
 
-SELECT AVG(popularity), liveness, acousticness
+SELECT artist_name,MAX(popularity)
 FROM Spotifydata
-GROUP BY liveness, acousticness
+GROUP BY artist_name
 ORDER BY popularity desc
-LIMIT 1
+LIMIT 1;

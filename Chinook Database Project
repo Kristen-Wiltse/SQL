@@ -1,0 +1,193 @@
+This project is designed to showcase my SQL skills. I have given a one answer example beneath each question, since including the whole table could get a bit lengthy! 
+This database called Chinook had several different tables included and needed joining to gain different information from each table. I thoroughly enjoyed this project and can't wait to use my skills in my next project!
+As always, if you have any questions about my work, feel free to reach out to me. 
+This was fun to play around with! 
+
+
+--Show Customers (their full names, customer ID, and country) who are not in the US.
+
+SELECT FirstName
+,LastName
+,CustomerID
+,Country
+FROM Customers
+WHERE Country<>'USA';
+
+--Luís	Gonçalves	1	Brazil
+--ONE answer example
+
+--Show only the Customers from Brazil.
+
+SELECT *
+FROM customers
+WHERE Country='Brazil';
+
+--1	Luís	Gonçalves	Embraer - Empresa Brasileira de Aeronáutica S.A.	Av. Brigadeiro Faria Lima, 2170	São José dos Campos	SP	Brazil	12227-000	+55 (12) 3923-5555	+55 (12) 3923-5566	luisg@embraer.com.br	3
+
+--Find the Invoices of customers who are from Brazil. The resulting table should show the customer's full name, Invoice ID, Date of the invoice, and billing country.
+--ONE answer example
+
+SELECT FirstName
+,LastName
+,InvoiceId
+,InvoiceDate
+,BillingCountry
+FROM customers 
+INNER JOIN invoices
+ON customers.CustomerId=invoices.CustomerId
+WHERE BillingCountry='Brazil';
+
+--Eduardo	Martins	25	2009-04-09 00:00:00	Brazil 
+--ONE answer example.
+
+--Show the Employees who are Sales Agents.
+
+SELECT * 
+FROM employees 
+WHERE Title='Sales Support Agent';
+
+--3	Peacock	Jane	Sales Support Agent	2	1973-08-29 00:00:00	2002-04-01 00:00:00	1111 6 Ave SW	Calgary	AB	Canada	T2P 5M5	+1 (403) 262-3443	+1 (403) 262-6712	jane@chinookcorp.com
+--ONE answer example
+
+--Find a unique/distinct list of billing countries from the Invoice table.
+
+SELECT DISTINCT BillingCountry
+FROM Invoices;
+
+--Germany
+--ONE answer example
+
+--Provide a query that shows the invoices associated with each sales agent. The resulting table should include the Sales Agent's full name.
+
+SELECT e1.FirstName
+      ,e1.LastName
+      ,i.InvoiceId
+FROM employees e1
+JOIN customers c
+  ON c.SupportRepId = e1.EmployeeId
+JOIN invoices i
+  ON i.CustomerId = c.CustomerId
+ORDER BY e1.FirstName ASC, e1.LastName ASC;
+
+--Jane	Peacock	98
+--ONE exmaple answer
+
+--How many Invoices were there in 2009?
+
+SELECT COUNT(InvoiceDate)
+FROM Invoices
+WHERE InvoiceDate LIKE '2009%';
+
+--83
+--The answer
+
+--What are the total sales for 2009?
+
+SELECT SUM(Quantity*UnitPrice) total_sales
+FROM invoice_items 
+JOIN invoices 
+ON invoice_items.InvoiceId=invoices.InvoiceId
+WHERE InvoiceDate LIKE '2009%';
+
+--449.46000000000265
+--Answer
+
+--Write a query that includes the purchased track name with each invoice line ID.
+
+SELECT tracks.Name
+,invoice_items.InvoiceLineId
+FROM tracks
+JOIN invoice_items
+ON tracks.TrackId=invoice_items.TrackId;
+
+--For Those About To Rock (We Salute You)	579
+--ONE answer example
+
+--Write a query that includes the purchased track name AND artist name with each invoice line ID.
+
+SELECT t.Name AS TrackName, ii.InvoiceLineId, a.Name AS ArtistName
+FROM tracks t
+JOIN invoice_items ii
+ON t.TrackId = ii.TrackId
+JOIN albums al
+ON al.AlbumId = t.AlbumId
+JOIN artists a
+ON a.ArtistId = al.ArtistId;
+
+--For Those About To Rock (We Salute You)	579	AC/DC
+--ONE example answer
+
+--Provide a query that shows all the Tracks, and include the Album name, Media type, and Genre.
+
+SELECT t.Name AS TrackName
+,ii.InvoiceLineId
+,ar.Name AS ArtistName
+,mt.Name AS Media_type
+,g.Name AS Genre_name
+FROM tracks t
+JOIN invoice_items ii
+ON t.TrackId = ii.TrackId
+JOIN albums al
+ON al.AlbumId = t.AlbumId
+JOIN artists ar ON ar.ArtistId = al.ArtistId
+JOIN media_types mt
+ON t.MediaTypeId=mt.MediaTypeId
+JOIN genres g
+ON t.GenreId=g.GenreId;
+
+--For Those About To Rock (We Salute You)	579	AC/DC	MPEG audio file    	Rock
+--ONE answer example
+
+--Show the total sales made by each sales agent.
+
+SELECT SUM(ii.UnitPrice*ii.Quantity) AS Total_Sales
+,e.LastName
+,e.FirstName
+FROM invoices i
+JOIN invoice_items ii
+ON i.InvoiceId=ii.InvoiceId
+JOIN customers c
+ON i.CustomerId=c.CustomerId
+JOIN employees e
+ON c.SupportRepId=e.employeeId
+GROUP BY e.FirstName, e.LastName
+ORDER BY e.FirstName asc, e.LastName asc;
+
+--833.0400000000058	Peacock	Jane
+--775.4000000000054	Park	Margaret
+--720.160000000005	Johnson	Steve
+--The Answer
+
+--Which sales agent made the most dollars in sales in 2009?
+
+SELECT SUM(ii.UnitPrice*ii.Quantity) AS Total_Sales
+,e.LastName
+,e.FirstName
+FROM invoices i
+JOIN invoice_items ii
+ON i.InvoiceId=ii.InvoiceId
+JOIN customers c
+ON i.CustomerId=c.CustomerId
+JOIN employees e
+ON c.SupportRepId=e.employeeId
+WHERE i.InvoiceDate LIKE '2009%'
+GROUP BY e.FirstName, e.LastName
+ORDER BY e.FirstName desc, e.LastName desc
+LIMIT 1;
+
+--164.34000000000003	Johnson	Steve
+--The answer
+
+--List all of the tracks and artists in alphabetical order. Omit Null values.
+
+SELECT Name
+,Composer
+FROM tracks
+WHERE Composer<>'Null'
+ORDER BY Name
+AND Composer;
+
+--For Those About To Rock (We Salute You)	Angus Young, Malcolm Young, Brian Johnson
+--ONE example answer
+
+Thank you for taking a peak at my work!
